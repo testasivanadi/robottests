@@ -1,47 +1,46 @@
-name: Robot Framework
-
+# run tests manually in the Actions-tab of the project
+name: Trigger Tests Manually
 on:
-  schedule:
-  - cron: "*/10 * * * *"
-
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      DINOSAUR:
+        description: 'Creature that is expected to be dinosaur:'
+        # Default value if no value is explicitly provided
+        default: achillobator
+        # Input has to be provided for the workflow to run
+        required: true
+      NOT_DINOSAUR:
+        description: 'Creature that is not a dinosaur:'
+        # Default value if no value is explicitly provided
+        default: dog
+        # Input has to be provided for the workflow to run
+        required: true
+      tag:
+        description: 'Tag for tests to run. Use "*" to run all'
+        # Default value if no value is explicitly provided
+        default: dinosaur
+        # Input has to be provided for the workflow to run
+        required: true
 jobs:
-    test:
+    run_tests:
         runs-on: ubuntu-latest
         steps:
         - uses: actions/checkout@v2
-        - name: Execute tests
-          uses: joonvena/robotframework-docker-action@v0.1
-          env:
-            BROWSER: chrome
-            ROBOT_TESTS_DIR: ${{ github.workspace }}/robot_tests
-            ROBOT_REPORTS_DIR: ${{ github.workspace }}/reports
-        - name: Upload test results
+        - name: Create folder for reports
+          run: mkdir reports
+        - name: Run Robot Framework Tests
+          run: |
+            docker run \
+              -v ${PWD}/reports:/opt/robotframework/reports:Z \
+              -v ${PWD}/tests:/opt/robotframework/tests:Z \
+              -e ROBOT_OPTIONS="--variable DINOSAUR:${{ github.event.inputs.DINOSAUR }} --variable NOT_DINOSAUR:${{ github.event.inputs.NOT_DINOSAUR }} --include ${{ github.event.inputs.tag }}" \
+              --user $(id -u):$(id -g) \
+              ppodgorsek/robot-framework:latest
+        - name: Upload reports
           uses: actions/upload-artifact@v1
           if: always()
           with:
             name: reports
+            # set path to Robot Framework results reports. Exclude dummy file that is needed because of ppodgorsek image priviledges.
             path: ${{ github.workspace }}/reports
-    
-    generate_report:
-        if: always()
-        needs: [test] 
-        runs-on: ubuntu-latest
-        steps:
-        - name: Download reports
-          uses: actions/download-artifact@v1
-          with:
-            name: reports
-        - name: Get Repository Owner & Name
-          run: |
-            export OWNER="$(echo "${{ github.repository }}" | awk -F / '{print $1}' | sed -e "s/:refs//")"
-            export REPO="$(echo "${{ github.repository }}" | awk -F / '{print $2}' | sed -e "s/:refs//")"
-            echo "::set-env name=REPOSITORY_OWNER::$OWNER"
-            echo "::set-env name=REPOSITORY_NAME::$REPO"
-        - name: Send report to commit
-          uses: joonvena/robotframework-reporter-action@v0.1
-          env:
-            GH_ACCESS_TOKEN: ${{ secrets.TOKEN }}
-            REPO_OWNER: ${{ env.REPOSITORY_OWNER }}
-            COMMIT_SHA: ${{ github.sha }}
-            REPOSITORY: ${{ env.REPOSITORY_NAME }}
-            REPORT_PATH: reports
