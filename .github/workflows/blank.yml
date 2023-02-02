@@ -20,6 +20,10 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     steps:
+    - name: Create folder
+      run: |
+        mkdir -p ${{ github.workspace }}/robot_tests &
+        mkdir -p ${{ github.workspace }}/reports
     - uses: actions/checkout@v2
     - name: Execute tests
       uses: joonvena/robotframework-docker-action@v0.1
