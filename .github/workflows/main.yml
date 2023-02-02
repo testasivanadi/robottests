@@ -1,8 +1,8 @@
 name: Robot Framework
 
 on:
-  push:
-    branches: [ master ]
+  schedule:
+  - cron: "*/10 * * * *"
 
 jobs:
     test:
