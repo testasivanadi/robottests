@@ -55,7 +55,7 @@ jobs:
             name: reports
         - name: Get Repository Owner & Name
           run: |
-            export ACTIONS_ALLOW_UNSECURE_COMMANDS = 'true'
+            export ACTIONS_ALLOW_UNSECURE_COMMANDS='true'
             export OWNER="$(echo "${{ github.repository }}" | awk -F / '{print $1}' | sed -e "s/:refs//")"
             export REPO="$(echo "${{ github.repository }}" | awk -F / '{print $2}' | sed -e "s/:refs//")"
             echo "::set-env name=REPOSITORY_OWNER::$OWNER"
