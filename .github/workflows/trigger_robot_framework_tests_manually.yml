@@ -6,7 +6,6 @@ on:
     inputs:
       DINOSAUR:
         description: 'Creature that is expected to be dinosaur:'
-        # Default value if no value is explicitly provided
         default: achillobator
         # Input has to be provided for the workflow to run
         required: true
