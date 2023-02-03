@@ -50,7 +50,6 @@ jobs:
       permissions:
         issues: 'write'
         pull-requests: 'write'
-        metadata: 'write'
       steps:
         - uses: actions/checkout@v2
         - name: Download reports
