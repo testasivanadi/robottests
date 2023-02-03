@@ -82,6 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: 'write'
+      metadata: 'write'
     steps:
       - uses: actions/checkout@v2
       - name: Download reports
