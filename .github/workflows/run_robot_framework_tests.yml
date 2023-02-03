@@ -9,6 +9,7 @@ on:
     paths-ignore:
       - '**.md'
     # run tests for GitHub Pull requests. Test result is visible in the Pull Request page.
+
   pull_request:
     paths-ignore:
       - '**.md'
