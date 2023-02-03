@@ -12,6 +12,24 @@ on:
   pull_request:
     paths-ignore:
       - '**.md'
+    inputs:
+      DINOSAUR:
+        description: 'Creature that is expected to be dinosaur:'
+        default: achillobator
+        # Input has to be provided for the workflow to run
+        required: true
+      NOT_DINOSAUR:
+        description: 'Creature that is not a dinosaur:'
+        # Default value if no value is explicitly provided
+        default: dog
+        # Input has to be provided for the workflow to run
+        required: true
+      tag:
+        description: 'Tag for tests to run. Use "*" to run all'
+        # Default value if no value is explicitly provided
+        default: dinosaur
+        # Input has to be provided for the workflow to run
+        required: true
   schedule:
     # run tests once a year in January 1st
     - cron:  '0 0 1 1 *'
