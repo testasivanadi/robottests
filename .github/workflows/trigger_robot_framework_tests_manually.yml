@@ -6,7 +6,6 @@ on:
     inputs:
       DINOSAUR:
         description: 'Creature that is expected to be dinosaur:'
-        # Default value if no value is explicitly provided
         default: achillobator
         # Input has to be provided for the workflow to run
         required: true
@@ -49,7 +48,8 @@ jobs:
       needs: [ run_tests ]
       runs-on: ubuntu-latest
       permissions:
-        issues: write
+        issues: 'write'
+        pull-requests: 'write'
       steps:
         - uses: actions/checkout@v2
         - name: Download reports
@@ -60,3 +60,4 @@ jobs:
           uses: joonvena/robotframework-reporter-action@v2.1
           with:
             gh_access_token: ${{ secrets.GITHUB_TOKEN }}
+            only_summary: 'true'
