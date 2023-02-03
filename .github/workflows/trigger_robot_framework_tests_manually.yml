@@ -46,7 +46,7 @@ jobs:
             path: ${{ github.workspace }}/reports
     generate_report:
       if: always()
-      needs: [ test ]
+      needs: [ run_tests ]
       runs-on: ubuntu-latest
       steps:
         - name: Download reports
